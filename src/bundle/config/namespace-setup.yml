@@ -1,0 +1,52 @@
+#@ load("@ytt:data","data")
+
+#@ for namespace in data.values.namespaces:
+
+#@ if namespace.exists == False:
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ namespace.name
+#@ end
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registry-credentials
+  namespace: #@ namespace.name
+  annotations:
+    secretgen.carvel.dev/image-pull-secret: ""
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: e30K
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: #@ namespace.name
+  annotations:
+    kapp.k14s.io/create-strategy: fallback-on-update
+secrets:
+  - name: registry-credentials
+imagePullSecrets:
+  - name: registry-credentials
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: default
+  namespace: #@ namespace.name
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: supply-chain-workload-role
+subjects:
+  - kind: ServiceAccount
+    name: default
+
+#@ end

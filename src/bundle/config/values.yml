@@ -1,0 +1,10 @@
+#@data/values
+---
+namespaces:
+  - name: ""
+    exists: ""
+
+registry: 
+  server: ""
+  username: ""
+  password: ""
