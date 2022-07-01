@@ -37,14 +37,51 @@ imagePullSecrets:
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: default
+rules:
+  - apiGroups: [source.toolkit.fluxcd.io]
+    resources: [gitrepositories]
+    verbs: ['*']
+  - apiGroups: [kpack.io]
+    resources: [images]
+    verbs: ['*']
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [list]
+  - apiGroups: [kapp.k14s.io]
+    resources: [configs]
+    verbs: ['*']
+  - apiGroups: [kappctrl.k14s.io]
+    resources: [apps]
+    verbs: ['*']
+  - apiGroups: [serving.knative.dev]
+    resources: [services]
+    verbs: ['*']
+  - apiGroups: [carto.run]
+    resources: [deliverables, runnables]
+    verbs: ['*']
+  - apiGroups: [tekton.dev]
+    resources: [pipelineruns, taskruns]
+    verbs: ['*']
+  - apiGroups: [tekton.dev]
+    resources: [pipelines, tasks]
+    verbs: ['*']
+  - apiGroups: [""]
+    resources: [configmaps]
+    verbs: ['*']
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: default
   namespace: #@ namespace.name
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: supply-chain-workload-role
+  kind: Role
+  name: default
 subjects:
   - kind: ServiceAccount
     name: default
