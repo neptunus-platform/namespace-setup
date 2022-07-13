@@ -19,8 +19,8 @@ The Namespace Setup package has the following configurable properties.
 
 ```yaml
 registry: 
-  server: ghcr.io/thomasvitale
-  username: thomasvitale
+  server: ghcr.io
+  username: <username>
   password: <password>
 
 namespaces:
